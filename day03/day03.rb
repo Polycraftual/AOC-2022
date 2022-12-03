@@ -45,6 +45,7 @@ input.each_with_index do |backpack_as_string|
   backpacks.push(backpack)
 end
 
+# Add up the total priority for all the shared items in backpacks
 overall_priority = backpacks.map(&:priority_calc).sum
 
 
