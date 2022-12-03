@@ -1,4 +1,4 @@
-input = File.readlines("./example.txt")
+input = File.readlines("./input.txt")
 
 # Game States
 # opp_rock = "A"
@@ -10,11 +10,11 @@ input = File.readlines("./example.txt")
 
 # Making a round
 class Round
-  attr_reader :opponent_action, :my_action
+  attr_reader :opponent_action, :outcome
   def initialize (actions_as_string)
     actions = actions_as_string.split(" ")
     @opponent_action = actions[0]
-    @my_action = actions[1]
+    @outcome = actions[1]
   end
 
   def opponent_map
@@ -25,52 +25,52 @@ class Round
     }
   end
 
-  def me_map
+  def outcome_map
     {
-      "X" => :rock,
-      "Y" => :paper,
-      "Z" => :scissors
+      "X" => "lose",
+      "Y" => "draw",
+      "Z" => "win"
     }
   end
 
-  def who_won
+  def my_action
     opp = opponent_map[opponent_action]
-    me = me_map[my_action]
+    out = outcome_map[outcome]
 
-    if opp == me
-      return "draw"
-    elsif opp == :rock && me == :paper
-      return "win"
-    elsif opp == :rock && me == :scissors
-      return "lose"
-    elsif opp == :paper && me == :rock
-      return "lose"
-    elsif opp == :paper && me == :scissors
-      return "win"
-    elsif opp == :scissors && me == :rock
-      return "win"
-    elsif opp == :scissors && me == :paper
-      return "lose"
+    if out == "draw"
+      return opp
+    elsif opp == :rock && out == "lose"
+      return :scissors
+    elsif opp == :rock && out == "win"
+      return :paper
+    elsif opp == :paper && out == "lose"
+      return :rock
+    elsif opp == :paper && out == "win"
+      return :scissors
+    elsif opp == :scissors && out == "lose"
+      return :paper
+    elsif opp == :scissors && out == "win"
+      return :rock
     end
   end
 
   def points
-    me = me_map[my_action]
+    out = outcome_map[outcome]
 
     score = 0
-    if me == :rock
+    if my_action == :rock
       score = score + 1
-    elsif me == :paper
+    elsif my_action == :paper
       score = score + 2
-    elsif me == :scissors
+    elsif my_action == :scissors
       score = score + 3
     end
 
-    if who_won == "win"
+    if out == "win"
       score = score + 6
-    elsif who_won == "draw"
+    elsif out == "draw"
       score = score + 3
-    elsif who_won == "lose"
+    elsif out == "lose"
       score = score + 0
     end
     return score
@@ -104,7 +104,7 @@ me_map = {
 overall_points = game.map(&:points).sum
 
 
-puts game[0].who_won
-puts game[1].who_won
-puts game[2].who_won
+puts game[0].my_action
+puts game[1].my_action
+puts game[2].my_action
 puts overall_points
