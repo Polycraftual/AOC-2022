@@ -51,13 +51,13 @@ actions.each do | action |
   # RegEx to select the digits from each instruction
   # Each action becomes an array of number to move, starting stack, ending stack
   variable = action.scan(/(\d+)/).flatten.map(&:to_i)
-  # Use the first digit in each action to say how many times to do the thing
-  variable[0].times do
-    # Find the top crate from the starting stack and remove it
-    crate = stacks[variable[1]-1].pop
-    # Put it on the top of the end stack
-    stacks[variable[2]-1].push(crate)
-  end
+  # Find the starting stack and remove the top "first variable" of crates from it
+  crates = stacks[variable[1]-1].pop(variable[0])
+  # Put it on the top of the end stack
+  stacks[variable[2]-1].push(crates)
+  stacks[variable[2]-1] = stacks[variable[2]-1].flatten
 end
+
+
 
 pp stacks
