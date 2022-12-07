@@ -3,23 +3,16 @@ input = File.open("./input.txt").read.chars
 # Create an array of the first four characters in the input string
 position = 0
 
+# Loop over each character
 input.each_with_index do | character, index |
+  # Make a selection of four/fourteen characters
   selection = input[index..index+13]
+  # Check to see whether the size of the selection matches the
+  # size of of the selections unique values
   if selection.size == selection.uniq.size
+    # Spit out the index of the last character in the selection
     puts index+14
+    # Stop the loop
     break
   end
 end
-
-# increment the starting position by one
-#   tell me the position of the last letter
-
-#   four_characters= (input.chars.each_slice(4).to_a)
-
-# # four_characters[position].size == four_characters[position].uniq.size
-#   # calculate the position of the last character in the full string
-
-# pp input.size
-# pp four_characters
-# pp input.chars.each_slice(4)
-# pp four_characters[0].size == four_characters[0].uniq.size
