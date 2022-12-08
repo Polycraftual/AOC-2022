@@ -1,4 +1,5 @@
 # Read in the input splitting on the new line
+require 'byebug'
 input = File.open("./input.txt").read.split("\n")
 
 $directories = []
@@ -11,15 +12,13 @@ class Directory
     @children = []
   end
 
-  def to_s
-    "My name is #{name} and my children are #{children.map(&:to_s)}, my size is #{size}"
-  end
+  # def to_s
+  #   "My name is #{name} and my children are #{children.map(&:to_s)}, my size is #{size}"
+  # end
 
   def size
     my_size = children.map(&:size).sum
-    if my_size < 100000
-      $directories.push(my_size)
-    end
+    $directories.push(my_size)
     my_size
   end
 end
@@ -59,5 +58,19 @@ actions = input.each_with_index do | line, index |
 end
 
 root_size = root.size
+filesystem_size = 70000000
+total_space_required = 30000000
 
-pp $directories.sum
+unused_space = filesystem_size-root_size
+required_space = total_space_required-unused_space
+
+sizes = []
+deletable = $directories.each do | directory |
+  if directory > required_space
+    sizes.push(directory)
+  end
+end
+
+smallest_to_remove = sizes.min
+
+puts smallest_to_remove
