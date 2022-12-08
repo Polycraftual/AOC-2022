@@ -1,20 +1,23 @@
+# Read in the input splitting on the new line
 input = File.open("./example.txt").read.split("\n")
 
-actions = []
-structure = []
+position = ""
+directory_size = 0
 
 find_actions = input.each_with_index do | line, index |
-  if action = line["$"]
-    actions.push(input[index])
+  if action = line["$ cd "]
+    position.insert(-1,(line[-1].to_s))
+  # unless
+  #   line[-1] == "."
+  #   position = position.pop
+  #   # Pop my position off again
+  elsif matches = line.match(/^(\d+)/)
+    puts matches[1].to_i
+    directory_size = directory_size+matches[1].to_i
   end
 end
 
-build_structure = actions.each do | action |
-  if action["cd"]
-    structure.push(action[5])
-  end
-end
+puts position
+puts directory_size
 
-pp input
-puts actions
-puts structure
+# [{name: 'a', size: 88}, {name: 'a/e', size: 9}]
