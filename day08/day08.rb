@@ -4,32 +4,95 @@ require 'byebug'
 copse_width = rows[0].size
 copse_height = rows.count
 
-rows_as_trees = rows.map do |row, index|
+horizontal_forest = rows.map do |row, index|
   row.chars
 end
 
-r_visibility = rows_as_trees.map.with_index do | tree, index |
-  if tree == rows_as_trees[-1]
-    true
-  else
-    current_index = index
+vertical_forest = []
+copse_height.times do
+  vertical_forest.push([])
+end
+
+rows.each do | row |
+  row.chars.each_with_index do | tree, index |
+    vertical_forest[index].push(tree)
+  end
+end
+
+l_visibility = horizontal_forest.map.with_index do | row_of_trees, index |
+  row_of_trees.map.with_index do | tree, i |
+    current_index = i
+    visible = true
+    while visible do
+      break if current_index == 0
+      next_taller = row_of_trees[current_index-1] >= tree
+      if next_taller
+        visible = false
+      else
+        current_index = current_index-1
+      end
+    end
+    visible
+  end
+end
+
+r_visibility = horizontal_forest.map.with_index do | row_of_trees, index |
+  row_of_trees.map.with_index do | tree, i |
+    current_index = i
     visible = true
     while visible do
       break if current_index == copse_width-1
-      puts "current: " + current_index.to_s
-      next_taller = tree[current_index+1] >= tree[index]
+      next_taller = row_of_trees[current_index+1] >= tree
       if next_taller
         visible = false
       else
         current_index = current_index+1
       end
     end
-  end   
-  visible 
+    visible
+  end
 end
 
-puts copse_width
-puts copse_height
+t_visibility = vertical_forest.map.with_index do | row_of_trees, index |
+  row_of_trees.map.with_index do | tree, i |
+    current_index = i
+    visible = true
+    while visible do
+      break if current_index == 0
+      next_taller = row_of_trees[current_index-1] >= tree
+      if next_taller
+        visible = false
+      else
+        current_index = current_index-1
+      end
+    end
+    visible
+  end
+end
 
-pp rows_as_trees
-pp r_visibility
+b_visibility = vertical_forest.map.with_index do | row_of_trees, index |
+  row_of_trees.map.with_index do | tree, i |
+    current_index = i
+    visible = true
+    while visible do
+      break if current_index == copse_width-1
+      next_taller = row_of_trees[current_index+1] >= tree
+      if next_taller
+        visible = false
+      else
+        current_index = current_index+1
+      end
+    end
+    visible
+  end
+end
+
+# puts copse_width
+# puts copse_height
+
+pp horizontal_forest
+pp vertical_forest
+pp r_visibility.flatten.count(true)
+pp l_visibility.flatten.count(true)
+pp t_visibility.flatten.count(true)
+pp b_visibility.flatten.count(true)
