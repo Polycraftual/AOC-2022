@@ -1,4 +1,4 @@
-rows = File.open("./example.txt").read.split("\n")
+rows = File.open("./input.txt").read.split("\n")
 require 'byebug'
 
 copse_width = rows[0].size
@@ -87,12 +87,76 @@ b_visibility = vertical_forest.map.with_index do | row_of_trees, index |
   end
 end
 
-# puts copse_width
-# puts copse_height
+# Compare the L-R visibility
+horizontal_visibility = []
+l_visibility.each_with_index do | row, index |
+  row.each_with_index do | tree, i |
+    if tree == true
+      horizontal_visibility.push(tree)
+    else
+      if r_visibility[index][i] == true
+        horizontal_visibility.push(true)
+      else
+        horizontal_visibility.push(tree)
+      end
+    end
+  end
+end
+
+# Compare the T-B visibility
+vertical_visbility = []
+t_visibility.each_with_index do | row, index |
+  row.each_with_index do | tree, i |
+    if tree == true
+      vertical_visbility.push(tree)
+    else
+      if b_visibility[index][i] == true
+        vertical_visbility.push(true)
+      else
+        vertical_visbility.push(tree)
+      end
+    end
+  end
+end
 
 pp horizontal_forest
 pp vertical_forest
-pp r_visibility.flatten.count(true)
-pp l_visibility.flatten.count(true)
-pp t_visibility.flatten.count(true)
-pp b_visibility.flatten.count(true)
+
+moo = []
+horizontal_visibility.each_slice(copse_width).map do |slice|
+  moo.push(slice)
+end
+
+hey = []
+vertical_visbility.each_slice(copse_height).map do |slice|
+  hey.push(slice)
+end
+
+baa = []
+copse_height.times do
+  baa.push([])
+end
+
+hey.each do | row |
+  row.each_with_index do | visibility, index |
+    baa[index].push(visibility)
+  end
+end
+
+# Compare the overall visibility
+overall_visbility = []
+moo.each_with_index do | row, index |
+  row.each_with_index do | tree, i |
+    if tree == true
+      overall_visbility.push(tree)
+    else
+      if baa[index][i] == true
+        overall_visbility.push(true)
+      else
+        overall_visbility.push(tree)
+      end
+    end
+  end
+end
+
+pp overall_visbility.count(true)
